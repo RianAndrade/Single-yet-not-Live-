@@ -11,7 +11,7 @@ export default class GameScene extends Phaser.Scene {
         // Carregar as 7 imagens do personagem
         for (let i = 0; i <= 6; i++) {
             const fileName = `sperm-${String(i).padStart(4, '0')}`;
-            this.load.image(fileName, `/assets/sperm/${fileName}.jpg`);
+            this.load.image(fileName, `/assets/sperm/${fileName}.png`);
         }
     }
 
@@ -28,4 +28,3 @@ export default class GameScene extends Phaser.Scene {
         this.esperm.update();
     }
 }
-

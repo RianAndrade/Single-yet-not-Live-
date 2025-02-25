@@ -10,6 +10,10 @@ export default class Esperm {
     this.sprite = scene.physics.add.sprite(400, 300, 'sperm-0000');  // Usando a primeira imagem como referência
     this.sprite.setCollideWorldBounds(true);
 
+    this.sprite.setSize(370, 300);
+    this.sprite.setOffset(125, 25);
+    this.sprite.setScale(0.5);
+
     // Criar animação com as 7 imagens
     scene.anims.create({
       key: 'walk',
@@ -85,5 +89,4 @@ export default class Esperm {
     return this.sprite;
   }
 }
-
 
