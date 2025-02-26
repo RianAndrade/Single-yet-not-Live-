@@ -3,7 +3,7 @@ import { Game as MainGame } from './scenes/Game';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
 import GameScene from './scenes/GameScene';
-
+import MainMenu from './scenes/MainMenu'
 
 const config: Phaser.Types.Core.GameConfig = {
     type: AUTO,
@@ -12,14 +12,21 @@ const config: Phaser.Types.Core.GameConfig = {
     parent: 'game-container',
     backgroundColor: '#028af8',
     physics: {
-        default: 'arcade', // Usa física arcade tem outras só ver na doc
-        arcade: {
-            gravity: { y: 200 }, // Gravidade no eixo Y
-            debug: true // para ver hitboxes True
-        }
+        default: 'matter',
+        matter: {
+        debug: true,
+        gravity: { y: 0 }, // Remove a gravidade vertical
+        enableSleeping: true // Melhora performance desativando corpos parados
+        },
+        debug: {
+            showBody: true,
+            showStaticBody: true
+        },
     },
     scene: [ // aqui estão as cenas do game, essas são de exemplo podem mudar 
-        GameScene // cena de teste de logica do semen 
+        GameScene,
+        MainMenu,
+// cena de teste de logica do semen 
     ],
 
 };

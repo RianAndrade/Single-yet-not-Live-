@@ -1,36 +1,24 @@
-// script/esperm.ts
-
 export default class Esperm {
-  private sprite: Phaser.Physics.Arcade.Sprite;
+  private sprite: Phaser.Physics.Matter.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private keys: any;
 
   constructor(scene: Phaser.Scene) {
-    // Inicializar o sprite do personagem com a primeira imagem
-    this.sprite = scene.physics.add.sprite(400, 300, 'sperm-0000');  // Usando a primeira imagem como referência
-    this.sprite.setCollideWorldBounds(true);
-
-    this.sprite.setSize(370, 300);
-    this.sprite.setOffset(125, 25);
+    // Inicializa o sprite do personagem com Matter.js usando a spritesheet
+    this.sprite = scene.matter.add.sprite(400, 300, 'sperm-sheet', 0);
+    this.sprite.setFixedRotation();
     this.sprite.setScale(0.5);
+    this.sprite.setMass(1);
+    this.sprite.setFrictionAir(0.05); // Reduz atrito do ar para um movimento mais fluido
 
-    // Criar animação com as 7 imagens
+    // Criar animação com a spritesheet
     scene.anims.create({
       key: 'walk',
-      frames: [
-        { key: 'sperm-0000' },
-        { key: 'sperm-0001' },
-        { key: 'sperm-0002' },
-        { key: 'sperm-0003' },
-        { key: 'sperm-0004' },
-        { key: 'sperm-0005' },
-        { key: 'sperm-0006' }
-      ],
+      frames: scene.anims.generateFrameNumbers('sperm-sheet', { start: 0, end: 7 }),
       frameRate: 10,
-      repeat: -1 // Repetir infinitamente
+      repeat: -1
     });
 
-    // Iniciar a animação
     this.sprite.anims.play('walk', true);
 
     // Configuração de controles
@@ -43,50 +31,27 @@ export default class Esperm {
     });
   }
 
-  // Método para atualizar a movimentação do personagem
   update() {
-    const speed = 200; // Velocidade de movimento
-
-    // Reseta a velocidade do personagem
-    this.sprite.setVelocity(0);
-
+    const force = 0.002; // Força aplicada para movimento suave
     let moveX = 0;
     let moveY = 0;
 
-    // Movimento para cima (W ou seta para cima)
-    if (this.cursors.up.isDown || this.keys.up.isDown) {
-      moveY = -speed;
-    }
+    if (this.cursors.up.isDown || this.keys.up.isDown) moveY = -force;
+    if (this.cursors.down.isDown || this.keys.down.isDown) moveY = force;
+    if (this.cursors.left.isDown || this.keys.left.isDown) moveX = -force;
+    if (this.cursors.right.isDown || this.keys.right.isDown) moveX = force;
 
-    // Movimento para baixo (S ou seta para baixo)
-    if (this.cursors.down.isDown || this.keys.down.isDown) {
-      moveY = speed;
-    }
+    // Aplica força em vez de setVelocity
+    this.sprite.applyForce({ x: moveX, y: moveY });
 
-    // Movimento para a esquerda (A ou seta para a esquerda)
-    if (this.cursors.left.isDown || this.keys.left.isDown) {
-      moveX = -speed;
-    }
-
-    // Movimento para a direita (D ou seta para a direita)
-    if (this.cursors.right.isDown || this.keys.right.isDown) {
-      moveX = speed;
-    }
-
-    // Aplica a velocidade ao personagem
-    this.sprite.setVelocityX(moveX);
-    this.sprite.setVelocityY(moveY);
-
-    // Calcula o ângulo de rotação com base na direção do movimento
+    // Ajusta a rotação para a direção do movimento
     if (moveX !== 0 || moveY !== 0) {
-      const angle = Math.atan2(moveY, moveX); // Calcula o ângulo em radianos
-      this.sprite.rotation = angle; // Aplica o ângulo de rotação ao personagem
+      const angle = Math.atan2(moveY, moveX) + Math.PI / 2; // Adiciona 90 graus
+      this.sprite.setRotation(angle);
     }
   }
 
-  // Método para acessar o sprite (caso precise em outro lugar)
   getSprite() {
     return this.sprite;
   }
 }
-
